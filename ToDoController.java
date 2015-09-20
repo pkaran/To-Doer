@@ -3,6 +3,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import model.SubTask;
 import model.Task;
@@ -40,7 +41,7 @@ public class ToDoController {
         setPriorityTogglesUserData();
         setPlaceHolder();
         setSelectionModel();
-
+        setCellFactory();
     }
 
     //setting user data for priority toggles
@@ -67,6 +68,98 @@ public class ToDoController {
         completeTaskListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         incompleteTaskListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         subTaskListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+    }
+
+    //setting cell factory for todoListView
+    private void setCellFactory(){
+
+        todoListView.setCellFactory(e -> new CustomToDoListViewCell());
+    }
+
+    //Cell factory for todoListView
+    //When in edit mode, an option for editing represented ToDO List's name and deleting it is displayed by the cell
+    private class CustomToDoListViewCell extends ListCell<ToDoList>{
+
+        @Override
+        protected void updateItem(ToDoList item, boolean empty) {
+            super.updateItem(item, empty);
+            updateViewModel();
+        }
+
+        private void updateViewModel(){
+
+            setText(null);
+            setGraphic(null);
+
+            if(isEditing()){
+                VBox mainBox = new VBox();
+
+                HBox changeToDoListNamebox = new HBox();
+                TextField listNameField = new TextField();
+                listNameField.setPromptText("Enter new list name ...");
+                Button setNameChange = new Button("Set");
+                changeToDoListNamebox.getChildren().addAll(listNameField, setNameChange);
+
+                Button deleteList = new Button("Delete List");
+                Button cancelEdit = new Button("Cancel");
+
+                if(getItem() != null){
+                    listNameField.setText(getItem().getListName());
+                }
+
+                setNameChange.setOnAction(e -> {
+
+                    if(!getItem().getListName().equals(setNameChange.getText())){
+                        commitEdit(new ToDoList(listNameField.getText(), getItem().getCompleteTaskList(), getItem().getIncompleteTaskList()));
+                        todoListView.getSelectionModel().select(getIndex());
+                    }
+                });
+
+                deleteList.setOnAction(e -> {
+
+                    int item_to_delete_index = getIndex();
+                    int size_of_data_model = toDoListModel.size();
+
+                    if(size_of_data_model > 1){
+
+                        if(item_to_delete_index == 0){
+                            todoListView.getSelectionModel().select(1);
+                        }else{
+                            todoListView.getSelectionModel().select(--item_to_delete_index);
+                        }
+
+                    }
+
+                    //remove deleted list from toDoListModel
+                    toDoListModel.remove(getIndex());
+                });
+
+                cancelEdit.setOnAction(e -> {
+                    cancelEdit();
+                });
+
+                mainBox.getChildren().addAll(changeToDoListNamebox, deleteList, cancelEdit);
+
+                setGraphic(mainBox);
+            }else{
+
+                if(getItem() != null){
+                    setText(getItem().getListName());
+                }
+            }
+        }
+
+        @Override
+        public void startEdit() {
+            super.startEdit();
+            updateViewModel();
+        }
+
+        @Override
+        public void cancelEdit() {
+            super.cancelEdit();
+            updateViewModel();
+        }
     }
 
     @FXML
