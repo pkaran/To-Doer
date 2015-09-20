@@ -39,6 +39,7 @@ public class ToDoController {
 
         setPriorityTogglesUserData();
         setPlaceHolder();
+        setSelectionModel();
 
     }
 
@@ -58,7 +59,16 @@ public class ToDoController {
         completeTaskListView.setPlaceholder(new Label("No complete task to display"));
         incompleteTaskListView.setPlaceholder(new Label("No incomplete task. Enjoy your day !"));
     }
-    
+
+    //setting selection model for todoListView, completeTaskListView, incompleteTaskListView and subTaskListView
+    private void setSelectionModel(){
+
+        todoListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        completeTaskListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        incompleteTaskListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        subTaskListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+    }
+
     @FXML
     private void showHideCompletedTask(){
 
