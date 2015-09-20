@@ -25,6 +25,13 @@ public class ToDoController {
 
     public void initialize(){
 
+        //disabling toDoListTasksInfoVBox and taskInfoVBox after the view loads up for the first time
+
+        //user needs to have a ToDoList from todoListView selected for toDoListTasksInfoVBox to be enabled
+        toDoListTasksInfoVBox.disableProperty().setValue(true);
+        //user needs to have a task from the incompleteTaskListView selected for taskInfoVBox to be enabled
+        taskInfoVBox.disableProperty().setValue(true);
+
     }
 
     @FXML
