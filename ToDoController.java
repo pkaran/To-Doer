@@ -2,12 +2,19 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import model.SubTask;
 import model.Task;
 import model.ToDoList;
+
+import java.time.LocalDate;
 
 /**
  * Controller for ToDoView.fxml
@@ -70,10 +77,12 @@ public class ToDoController {
         subTaskListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
     }
 
-    //setting cell factory for todoListView
+    //setting cell factory for todoListView, incompleteTaskListView and completeTaskListView
     private void setCellFactory(){
 
         todoListView.setCellFactory(e -> new CustomToDoListViewCell());
+        incompleteTaskListView.setCellFactory(e -> new CustomTaskListViewCell());
+        completeTaskListView.setCellFactory(e -> new CustomTaskListViewCell());
     }
 
     //Cell factory for todoListView
@@ -160,6 +169,100 @@ public class ToDoController {
             super.cancelEdit();
             updateViewModel();
         }
+    }
+
+    //Cell factory for incompleteTaskListView and completeTaskListView
+    //cell factory displays cell with following information about a task(if available):
+    //Task name, task priority and task due date
+    private class CustomTaskListViewCell extends  ListCell<Task>{
+
+        @Override
+        protected void updateItem(Task item, boolean empty) {
+            super.updateItem(item, empty);
+            updateViewModel();
+        }
+
+        private void updateViewModel(){
+
+            setText(null);
+            setGraphic(null);
+
+            if(getItem() != null){
+
+                BorderPane mainBox = new BorderPane();
+                mainBox.setPadding(new Insets(3.0, 5.0, 3.0, 3.0));
+
+                VBox taskNameDisplay = new VBox();
+                taskNameDisplay.setAlignment(Pos.CENTER_LEFT);
+                Text taskNameText = new Text();
+                taskNameDisplay.getChildren().addAll(taskNameText);
+
+                HBox priorityDueDateDisplay = new HBox();
+                priorityDueDateDisplay.setAlignment(Pos.CENTER_RIGHT);
+                Text taskPriorityText = new Text();
+                Text taskDueDateText = new Text();
+                taskPriorityText.setScaleX(1.25);
+                taskPriorityText.setScaleY(1.25);
+                priorityDueDateDisplay.setSpacing(40);
+                priorityDueDateDisplay.getChildren().addAll(taskDueDateText, taskPriorityText);
+
+                mainBox.leftProperty().set(taskNameDisplay);
+                mainBox.rightProperty().set(priorityDueDateDisplay);
+
+                mainBox.setMargin(mainBox.getLeft(), new Insets(0, 20, 0, 0));
+
+                Task currentTask = getItem();
+                int currentTaskPriority = currentTask.getPriority();
+
+                //setting task name to be displayed by the cell
+                taskNameText.setText(currentTask.getTaskTitle());
+
+                //setting task due date to be displayed by the cell
+                if(currentTask.getTaskDueDate() != null){
+
+                    LocalDate currentDueDate = currentTask.getTaskDueDate();
+                    taskDueDateText.setText(currentDueDate.getMonthValue() + "/" + currentDueDate.getDayOfMonth() + "/" + currentDueDate.getYear());
+                }
+
+                //setting task priority to be displayed by the cell
+                switch (currentTaskPriority){
+                    case 1:{
+                        taskPriorityText.setText("!");
+                        taskPriorityText.setFill(Color.web("#28ae33"));
+                        break;
+
+                    }
+                    case 2:{
+                        taskPriorityText.setText("!!");
+                        taskPriorityText.setFill(Color.web("#babf23"));
+                        break;
+                    }
+                    case 3:{
+                        taskPriorityText.setText("!!!");
+                        taskPriorityText.setFill(Color.web("#ee0606"));
+                        break;
+                    }
+                    default:{
+                    }
+
+                }
+
+
+                if(!currentTask.getComplete()){
+                    taskNameText.setStrikethrough(false);
+                }else{
+                    //if task is completed, strike out the task name
+
+                    mainBox.setOpacity(0.5);
+                    taskNameText.setStrikethrough(true);
+                }
+
+                setText(null);
+                setGraphic(mainBox);
+            }
+
+        }
+
     }
 
     @FXML
