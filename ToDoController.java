@@ -1,3 +1,5 @@
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -13,6 +15,13 @@ import model.ToDoList;
  */
 
 public class ToDoController {
+
+    //ObservableList to hold all lists in the program
+    private ObservableList<ToDoList> toDoListModel = FXCollections.observableArrayList();
+
+    public ObservableList<ToDoList> getData(){
+        return toDoListModel;
+    }
 
     public void initialize(){
 
@@ -101,3 +110,4 @@ public class ToDoController {
     private TextField newToDoListTextField;
 
 }
+
