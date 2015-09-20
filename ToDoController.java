@@ -38,6 +38,7 @@ public class ToDoController {
         todoListView.itemsProperty().set(toDoListModel);
 
         setPriorityTogglesUserData();
+        setPlaceHolder();
 
     }
 
@@ -49,6 +50,15 @@ public class ToDoController {
         highPriorityToggle.setUserData(3);
     }
 
+    //setting place holder for todoListView, subTaskListView, completeTaskListView and incompleteTaskListView
+    private void setPlaceHolder() {
+
+        todoListView.setPlaceholder(new Label("Add a new To Do list from below ..."));
+        subTaskListView.setPlaceholder(new Label("No subtask to display"));
+        completeTaskListView.setPlaceholder(new Label("No complete task to display"));
+        incompleteTaskListView.setPlaceholder(new Label("No incomplete task. Enjoy your day !"));
+    }
+    
     @FXML
     private void showHideCompletedTask(){
 
