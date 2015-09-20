@@ -35,6 +35,7 @@ public class ToDoController {
         //setting editableProperty to false so that user cannot enter a date in custom format and needs to select date from datepicker
         taskDueDatePicker.editableProperty().setValue(false);
 
+        todoListView.itemsProperty().set(toDoListModel);
     }
 
     @FXML
