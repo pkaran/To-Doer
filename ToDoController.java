@@ -36,6 +36,17 @@ public class ToDoController {
         taskDueDatePicker.editableProperty().setValue(false);
 
         todoListView.itemsProperty().set(toDoListModel);
+
+        setPriorityTogglesUserData();
+
+    }
+
+    //setting user data for priority toggles
+    private void setPriorityTogglesUserData(){
+
+        lowPriorityToggle.setUserData(1);
+        mediumPriorityToggle.setUserData(2);
+        highPriorityToggle.setUserData(3);
     }
 
     @FXML
