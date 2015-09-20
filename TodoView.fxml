@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<ScrollPane xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ToDoController">
+   <content>
+      <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="591.0" prefWidth="1005.0">
+         <left>
+            <VBox alignment="BOTTOM_LEFT" prefHeight="555.0" prefWidth="210.0" spacing="5.0" BorderPane.alignment="CENTER">
+               <children>
+                  <ImageView fitHeight="153.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="media/icon.jpg" />
+                     </image>
+                  </ImageView>
+                  <ListView fx:id="todoListView" editable="true" prefHeight="412.0" prefWidth="200.0" />
+                  <HBox spacing="5.0">
+                     <children>
+                        <TextField fx:id="newToDoListTextField" prefHeight="25.0" prefWidth="166.0" promptText="Add a new To-Do list ..." />
+                        <Button fx:id="addTodoListButton" mnemonicParsing="false" prefHeight="25.0" prefWidth="28.0" text="+" />
+                     </children>
+                  </HBox>
+               </children>
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+               <BorderPane.margin>
+                  <Insets />
+               </BorderPane.margin>
+            </VBox>
+         </left>
+         <center>
+            <HBox BorderPane.alignment="CENTER">
+               <BorderPane.margin>
+                  <Insets />
+               </BorderPane.margin>
+               <children>
+                  <Separator orientation="VERTICAL" prefHeight="200.0" />
+                  <VBox fx:id="toDoListTasksInfoVBox" prefHeight="585.0" prefWidth="611.0" spacing="5.0">
+                     <children>
+                        <HBox alignment="CENTER" spacing="5.0">
+                           <children>
+                              <TextField fx:id="newTaskTextField" prefHeight="34.0" prefWidth="533.0" promptText="Add a new task ..." />
+                              <Button fx:id="addTaskButton" mnemonicParsing="false" prefHeight="34.0" prefWidth="38.0" text="+" />
+                           </children>
+                        </HBox>
+                        <ListView fx:id="incompleteTaskListView" prefHeight="363.0" prefWidth="585.0" VBox.vgrow="NEVER" />
+                        <Button fx:id="showHideCompletedTaskButton" alignment="CENTER" mnemonicParsing="false" onAction="#showHideCompletedTask" text="Show Completed Tasks" />
+                        <ListView fx:id="completeTaskListView" disable="true" prefHeight="139.0" prefWidth="582.0" visible="false" />
+                     </children>
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                  </VBox>
+                  <Separator orientation="VERTICAL" prefHeight="200.0" />
+               </children>
+            </HBox>
+         </center>
+         <right>
+            <VBox fx:id="taskInfoVBox" alignment="CENTER" prefHeight="555.0" prefWidth="194.0" spacing="7.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Label text="Task Name" />
+                  <HBox alignment="CENTER" spacing="3.0">
+                     <children>
+                        <TextField fx:id="taskNameTextField" prefHeight="29.0" prefWidth="121.0" promptText="Task name ...">
+                           <font>
+                              <Font name="System Bold" size="13.0" />
+                           </font>
+                        </TextField>
+                        <Button fx:id="saveNewTaskNameButton" mnemonicParsing="false" text="Change" />
+                     </children>
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                  </HBox>
+                  <Separator prefWidth="200.0" />
+                  <Label text="Task Due Date" />
+                  <HBox spacing="3.0">
+                     <children>
+                        <DatePicker fx:id="taskDueDatePicker" prefHeight="25.0" prefWidth="139.0" promptText="Select due date ..." />
+                        <Button fx:id="clearDueDate" mnemonicParsing="false" text="Clear" />
+                     </children>
+                  </HBox>
+                  <Separator prefWidth="200.0" />
+                  <Label text="Task Priority" />
+                  <HBox alignment="CENTER" prefHeight="38.0" prefWidth="194.0" spacing="10.0">
+                     <children>
+                        <ToggleButton fx:id="lowPriorityToggle" mnemonicParsing="false" text="!" textFill="#28ae33">
+                           <toggleGroup>
+                              <ToggleGroup fx:id="priority_toggle_group" />
+                           </toggleGroup>
+                        </ToggleButton>
+                        <ToggleButton fx:id="mediumPriorityToggle" mnemonicParsing="false" text="!!" textFill="#babf23" toggleGroup="$priority_toggle_group" />
+                        <ToggleButton fx:id="highPriorityToggle" mnemonicParsing="false" text="!!!" textFill="#ee0606" toggleGroup="$priority_toggle_group" />
+                     </children>
+                  </HBox>
+                  <Separator prefWidth="200.0" />
+                  <Label text="Subtask" />
+                  <ListView fx:id="subTaskListView" prefHeight="220.0" prefWidth="194.0" />
+                  <HBox alignment="CENTER" spacing="5.0">
+                     <children>
+                        <TextField fx:id="addSubTaskField" prefHeight="25.0" prefWidth="148.0" promptText="Add a sub task ..." />
+                        <Button fx:id="addSubTaskButton" mnemonicParsing="false" prefHeight="25.0" prefWidth="26.0" text="+" />
+                     </children>
+                  </HBox>
+                  <Separator prefWidth="200.0" />
+                  <Label text="Note" />
+                  <TextArea fx:id="taskNoteTextArea" prefHeight="222.0" prefWidth="194.0" promptText="Add a note ..." />
+                  <Separator prefWidth="200.0" />
+                  <Button fx:id="deleteTaskButton" mnemonicParsing="false" onAction="#deleteTask" text="Delete Task" />
+               </children>
+               <BorderPane.margin>
+                  <Insets />
+               </BorderPane.margin>
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+            </VBox>
+         </right>
+         <padding>
+            <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+         </padding>
+      </BorderPane>
+   </content>
+</ScrollPane>
