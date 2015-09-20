@@ -32,6 +32,9 @@ public class ToDoController {
         //user needs to have a task from the incompleteTaskListView selected for taskInfoVBox to be enabled
         taskInfoVBox.disableProperty().setValue(true);
 
+        //setting editableProperty to false so that user cannot enter a date in custom format and needs to select date from datepicker
+        taskDueDatePicker.editableProperty().setValue(false);
+
     }
 
     @FXML
