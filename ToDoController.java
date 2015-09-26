@@ -55,6 +55,7 @@ public class ToDoController {
         setAddToDoListButtonAndFieldHandler();
         setAddTaskButtonAndFieldHandler();
         setAddSubTaskButtonAndField();
+        setTaskCompleteOrIncomplete();
 
     }
 
@@ -374,6 +375,49 @@ public class ToDoController {
                 incompleteTaskListView.getSelectionModel().getSelectedItem().getSubTasks().add(0, new SubTask(addSubTaskField.getText()));
                 subTaskListView.getSelectionModel().select(-1);
                 addSubTaskField.clear();
+            }
+        });
+
+    }
+
+    //adding setOnMouseClicked event handler for incompleteTaskListView and completeTaskListView so that a task can be marked as
+    //complete or incomplete
+    //if a task in the incompleteTaskListView is double clicked, it will be marked as completed and moved to completeTaskListView and vice versa
+    private void setTaskCompleteOrIncomplete(){
+
+        incompleteTaskListView.setOnMouseClicked(event -> {
+            if (event.getClickCount() >= 2) {
+
+                int selectedToDoList_Index = todoListView.getSelectionModel().getSelectedIndex();
+                int selectedTaskEvent_Index = incompleteTaskListView.getSelectionModel().getSelectedIndex();
+
+                if (selectedToDoList_Index >= 0 && selectedTaskEvent_Index >= 0) {
+
+                    Task selectedTask = toDoListModel.get(selectedToDoList_Index).getIncompleteTaskList().get(selectedTaskEvent_Index);
+                    toDoListModel.get(selectedToDoList_Index).getIncompleteTaskList().remove(selectedTaskEvent_Index);
+
+                    selectedTask.setComplete(true);
+                    toDoListModel.get(selectedToDoList_Index).getCompleteTaskList().add(0, selectedTask);
+
+                }
+            }
+        });
+
+        completeTaskListView.setOnMouseClicked(event -> {
+            if (event.getClickCount() >= 2) {
+
+                int selectedToDoList_Index = todoListView.getSelectionModel().getSelectedIndex();
+                int selectedTaskEvent_Index = completeTaskListView.getSelectionModel().getSelectedIndex();
+
+                if (selectedToDoList_Index >= 0 && selectedTaskEvent_Index >= 0) {
+
+                    Task selectedTask = toDoListModel.get(selectedToDoList_Index).getCompleteTaskList().get(selectedTaskEvent_Index);
+                    toDoListModel.get(selectedToDoList_Index).getCompleteTaskList().remove(selectedTaskEvent_Index);
+
+                    selectedTask.setComplete(false);
+                    toDoListModel.get(selectedToDoList_Index).getIncompleteTaskList().add(0, selectedTask);
+
+                }
             }
         });
 
