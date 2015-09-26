@@ -437,8 +437,23 @@ public class ToDoController {
         });
     }
 
+    //if showHideCompletedTaskButton clicked, show the completeTaskListView if it is hidden and vice versa
     @FXML
     private void showHideCompletedTask(){
+
+        if(completeTaskListView.disabledProperty().get()){
+            completeTaskListView.disableProperty().setValue(false);
+            completeTaskListView.setVisible(true);
+
+            showHideCompletedTaskButton.setText("Hide Completed Tasks");
+        }else{
+
+            completeTaskListView.disableProperty().setValue(true);
+            completeTaskListView.setVisible(false);
+
+            showHideCompletedTaskButton.setText("Show Completed Tasks");
+
+        }
 
     }
 
