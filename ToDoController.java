@@ -54,6 +54,7 @@ public class ToDoController {
         setCellFactory();
         setAddToDoListButtonAndFieldHandler();
         setAddTaskButtonAndFieldHandler();
+        setAddSubTaskButtonAndField();
 
     }
 
@@ -342,6 +343,37 @@ public class ToDoController {
                 toDoListModel.get(selectedToDoListIndex).getIncompleteTaskList().add(0, new Task(newTaskTextField.getText()));
                 incompleteTaskListView.getSelectionModel().select(0);
                 newTaskTextField.clear();
+            }
+        });
+
+    }
+
+    //adding event handler for addSubTaskField and addSubTaskButton
+    //event handlers will enable the user to add new sub tasks to a selected task
+    private void setAddSubTaskButtonAndField(){
+
+        //if addSubTaskField has focus and if enter pressed, add sub task to the program given that addSubTaskField is not empty
+        addSubTaskField.addEventHandler(KEY_PRESSED, event -> {
+
+            if (event.getCode().equals(KeyCode.ENTER)) {
+
+                if (!addSubTaskField.getText().isEmpty()) {
+
+                    incompleteTaskListView.getSelectionModel().getSelectedItem().getSubTasks().add(0, new SubTask(addSubTaskField.getText()));
+                    subTaskListView.getSelectionModel().select(-1);
+                    addSubTaskField.clear();
+                }
+            }
+
+        });
+
+        //if addSubTaskButton pressed, add sub task to the program
+        addSubTaskButton.setOnAction(event -> {
+            if (!addSubTaskField.getText().isEmpty()) {
+
+                incompleteTaskListView.getSelectionModel().getSelectedItem().getSubTasks().add(0, new SubTask(addSubTaskField.getText()));
+                subTaskListView.getSelectionModel().select(-1);
+                addSubTaskField.clear();
             }
         });
 
