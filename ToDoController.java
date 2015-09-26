@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -15,6 +16,8 @@ import model.Task;
 import model.ToDoList;
 
 import java.time.LocalDate;
+
+import static javafx.scene.input.KeyEvent.KEY_PRESSED;
 
 /**
  * Controller for ToDoView.fxml
@@ -49,6 +52,8 @@ public class ToDoController {
         setPlaceHolder();
         setSelectionModel();
         setCellFactory();
+        setAddToDoListButtonAndFieldHandler();
+
     }
 
     //setting user data for priority toggles
@@ -262,6 +267,46 @@ public class ToDoController {
             }
 
         }
+
+    }
+
+    //event handler for newToDoListTextField and addTodoListButton
+    //event handlers will help the user to add new ToDo list to the program
+    private void setAddToDoListButtonAndFieldHandler(){
+
+        newToDoListTextField.addEventHandler(KEY_PRESSED, (event) -> {
+
+            //if enter pressed, save To Do List
+            if (event.getCode().equals(KeyCode.ENTER)) {
+
+                if (!newToDoListTextField.getText().isEmpty()) {
+
+                    ToDoList toAdd = new ToDoList(newToDoListTextField.getText());
+
+                    //add new list to the top
+                    toDoListModel.add(0, toAdd);
+                    newToDoListTextField.clear();
+                    //select the newly added list
+                    todoListView.getSelectionModel().select(toAdd);
+                    newTaskTextField.requestFocus();
+                }
+            }
+        });
+
+        //if addTodoListButton button pressed, add the new ToDo list in the newToDoListTextField to the program
+        addTodoListButton.setOnAction(event -> {
+            if (!newToDoListTextField.getText().isEmpty()) {
+
+                ToDoList toAdd = new ToDoList(newToDoListTextField.getText());
+
+                //add new list to the top
+                toDoListModel.add(0, toAdd);
+                newToDoListTextField.clear();
+                //select the newly added list
+                todoListView.getSelectionModel().select(toAdd);
+                newTaskTextField.requestFocus();
+            }
+        });
 
     }
 
