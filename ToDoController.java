@@ -56,6 +56,7 @@ public class ToDoController {
         setAddTaskButtonAndFieldHandler();
         setAddSubTaskButtonAndField();
         setTaskCompleteOrIncomplete();
+        setSubTaskComplete();
 
     }
 
@@ -421,6 +422,19 @@ public class ToDoController {
             }
         });
 
+    }
+
+    //adding setOnMouseClicked event handler for subTaskListView so that a sub task can be marked complete
+    //when a sub task in the subTaskListView is clicked more than twice, the sub task task will be marked complete and removed out of the subTaskListView
+    private void setSubTaskComplete(){
+
+        subTaskListView.setOnMouseClicked(event -> {
+
+            if (event.getClickCount() >= 2) {
+                incompleteTaskListView.getSelectionModel().getSelectedItem().getSubTasks().remove(subTaskListView.getSelectionModel().getSelectedItem());
+                subTaskListView.getSelectionModel().select(-1);
+            }
+        });
     }
 
     @FXML
