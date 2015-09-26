@@ -53,6 +53,7 @@ public class ToDoController {
         setSelectionModel();
         setCellFactory();
         setAddToDoListButtonAndFieldHandler();
+        setAddTaskButtonAndFieldHandler();
 
     }
 
@@ -305,6 +306,42 @@ public class ToDoController {
                 //select the newly added list
                 todoListView.getSelectionModel().select(toAdd);
                 newTaskTextField.requestFocus();
+            }
+        });
+
+    }
+
+    //adding event handler for newToDoListTextField and addTodoListButton in the function
+    //event handlers will help the user to add new Task to the program
+    private void setAddTaskButtonAndFieldHandler(){
+
+        //add new task to the program if newTaskTextField has focus and enter is pressed
+        //new task added has the same name as the newTaskTextField's Text property
+        newTaskTextField.addEventHandler(KEY_PRESSED, event -> {
+
+            if(event.getCode().equals(KeyCode.ENTER)){
+
+                if(!newTaskTextField.getText().isEmpty()){
+
+                    incompleteTaskListView.getSelectionModel().clearSelection();
+                    int selectedToDoListIndex = todoListView.getSelectionModel().getSelectedIndex();
+                    toDoListModel.get(selectedToDoListIndex).getIncompleteTaskList().add(0, new Task(newTaskTextField.getText()));
+                    incompleteTaskListView.getSelectionModel().select(0);
+                    newTaskTextField.clear();
+                }
+            }
+
+        });
+
+        //if addTaskButton clicked, add the ew event to the program
+        addTaskButton.setOnAction(event -> {
+            if(!newTaskTextField.getText().isEmpty()){
+
+                incompleteTaskListView.getSelectionModel().clearSelection();
+                int selectedToDoListIndex = todoListView.getSelectionModel().getSelectedIndex();
+                toDoListModel.get(selectedToDoListIndex).getIncompleteTaskList().add(0, new Task(newTaskTextField.getText()));
+                incompleteTaskListView.getSelectionModel().select(0);
+                newTaskTextField.clear();
             }
         });
 
