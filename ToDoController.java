@@ -1,3 +1,4 @@
+import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -57,6 +58,7 @@ public class ToDoController {
         setAddSubTaskButtonAndField();
         setTaskCompleteOrIncomplete();
         setSubTaskComplete();
+        setSelectedToDoListListener();
 
     }
 
@@ -435,6 +437,46 @@ public class ToDoController {
                 subTaskListView.getSelectionModel().select(-1);
             }
         });
+    }
+
+    //function adds a listner to todoListView's selected item so that the user selected todo list can be tracked and
+    //completeTaskListView and incompleteTaskListView can be updated with selected todo list's corresponding tasks
+    private void setSelectedToDoListListener(){
+
+        ObservableList<ToDoList> selectedToDoListTask = todoListView.getSelectionModel().getSelectedItems();
+
+        //listener to monitor change in selected To Do list
+        selectedToDoListTask.addListener((Observable e) -> {
+
+            ToDoList selectedToDo = todoListView.getSelectionModel().getSelectedItem();
+
+            //if an item is selected
+            if (selectedToDo != null) {
+
+                if (toDoListTasksInfoVBox.disabledProperty().get()) {
+                    toDoListTasksInfoVBox.disableProperty().set(false);
+                }
+
+                //set incompleteTaskListView to selected item's incomplete task list
+                incompleteTaskListView.itemsProperty().setValue(selectedToDo.getIncompleteTaskList());
+
+                //set completeTaskListView to selected item's complete task list
+                completeTaskListView.itemsProperty().setValue(selectedToDo.getCompleteTaskList());
+
+                incompleteTaskListView.requestFocus();
+
+                incompleteTaskListView.getSelectionModel().clearSelection();
+
+            } else {
+                //if no item is selected
+                incompleteTaskListView.setItems(null);
+                completeTaskListView.setItems(null);
+                toDoListTasksInfoVBox.disableProperty().set(true);
+                taskInfoVBox.disableProperty().set(true);
+
+            }
+        });
+
     }
 
     //if showHideCompletedTaskButton clicked, show the completeTaskListView if it is hidden and vice versa
