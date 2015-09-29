@@ -479,6 +479,115 @@ public class ToDoController {
 
     }
 
+    //saves the task information from taskInfoVBox form to the task passed in as argument
+    private void saveTaskInfo(Task task){
+
+        //to track if the task's attributes have been changed
+        boolean differentTaskName = false, differentDueDate = false, differentPriority = false;
+
+        if(task == null){
+            return;
+        }
+
+        //if different title
+        if(!task.getTaskTitle().equals(taskNameTextField.getText()))
+            differentTaskName = true;
+
+        //if different due date
+        if(task.getTaskDueDate() == null){
+            if(taskDueDatePicker.getValue() != null){
+                differentDueDate = true;
+            }
+        }else{
+
+            if(taskDueDatePicker.getValue() == null){
+                differentDueDate = true;
+            }
+
+            if(taskDueDatePicker.getValue() != null){
+                if(!(task.getTaskDueDate().isEqual(taskDueDatePicker.getValue())))
+                    differentDueDate = true;
+            }
+        }
+
+
+        int currentTaskPriority = task.getPriority();
+
+        //if no priority selected for the task
+        if(priority_toggle_group.getSelectedToggle() == null){
+            if(currentTaskPriority != 0){
+                differentPriority = true;
+            }
+        }else{
+            //if different priority
+            if(currentTaskPriority != (int) priority_toggle_group.getSelectedToggle().getUserData())
+                differentPriority = true;
+        }
+
+        //if task attributes have been changed, replace current task with new task with updated task attributes
+        if(differentTaskName || differentDueDate || differentPriority){
+
+            Task replacementTask = new Task();
+
+            replacementTask.setTaskTitle(taskNameTextField.getText());
+            replacementTask.setTaskDueDate(taskDueDatePicker.getValue());
+            if(priority_toggle_group.getSelectedToggle() == null){
+                replacementTask.setPriority(0);
+            }else{
+                replacementTask.setPriority((int) priority_toggle_group.getSelectedToggle().getUserData());
+            }
+            replacementTask.setSubTasks(task.getSubTasks());
+            replacementTask.setNote(taskNoteTextArea.getText());
+
+            int currentListIndex = -1, currentTaskIndex = -1;            //to track current index
+            int replacementListIndex = -1, replacementTaskIndex = -1;   //to track index where replacement task will placed at
+
+            found:{
+                for(ToDoList currentList : toDoListModel){
+
+                    currentListIndex++;
+                    currentTaskIndex = -1;
+
+                    for(Task currentTask : currentList.getIncompleteTaskList()){
+                        currentTaskIndex++;
+
+                        //if task's unique ID matches current task, assign the current task's list index and task index to the replacement index variables
+                        //and break out of the loop
+                        if(currentTask.getUniqueID() == task.getUniqueID()){
+                            replacementListIndex = currentListIndex;
+                            replacementTaskIndex = currentTaskIndex;
+
+                            break found;
+                        }
+
+                    }
+                }
+            }
+
+            //if found the task to replace with
+            if(replacementListIndex != -1 && replacementTaskIndex != -1){
+                toDoListModel.get(replacementListIndex).getIncompleteTaskList().set(replacementTaskIndex, replacementTask);
+
+                //if task to be replaced is the first task in the first to do list, select the replaced task and update
+                //incompleteTaskListView
+                //code below help to get around a bug in selection model for list view
+                if(replacementListIndex == 0 && replacementTaskIndex == 0){
+                    todoListView.getSelectionModel().select(replacementListIndex);
+                    incompleteTaskListView.getSelectionModel().select(replacementListIndex);
+                }
+
+            }
+
+        }
+        //if task's priority, name and due date have not been changed, then only update the task's (one that is passed in as argument) note
+        else{
+
+            task.setNote(taskNoteTextArea.getText());
+        }
+
+    }
+
+
     //if showHideCompletedTaskButton clicked, show the completeTaskListView if it is hidden and vice versa
     @FXML
     private void showHideCompletedTask(){
