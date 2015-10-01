@@ -2,6 +2,7 @@ import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -59,6 +60,7 @@ public class ToDoController {
         setTaskCompleteOrIncomplete();
         setSubTaskComplete();
         setSelectedToDoListListener();
+        updateTaskView();
 
     }
 
@@ -587,6 +589,40 @@ public class ToDoController {
 
     }
 
+    //updates view based on following actions :
+    //when a user changes a task's priority, modified task is saved
+    //when a user types in the taskNameTextField, enable the saveNewTaskNameButton
+    //added listener for saveNewTaskNameButton (when a user clicks it, the task is updated) and clearDueDate
+    private void updateTaskView(){
+
+        int selectedToDoListIndex = todoListView.getSelectionModel().getSelectedIndex();
+        int selectedTaskIndex = incompleteTaskListView.getSelectionModel().getSelectedIndex();
+
+        EventHandler<ActionEvent> toggleAction = observable -> {
+
+            saveTaskInfo(incompleteTaskListView.getSelectionModel().getSelectedItem());
+        };
+
+        lowPriorityToggle.setOnAction(toggleAction);
+        mediumPriorityToggle.setOnAction(toggleAction);
+        highPriorityToggle.setOnAction(toggleAction);
+
+        taskNameTextField.setOnKeyPressed(event -> {
+
+            saveNewTaskNameButton.disableProperty().setValue(false);
+        });
+
+        saveNewTaskNameButton.setOnAction(event -> {
+
+            saveTaskInfo(incompleteTaskListView.getSelectionModel().getSelectedItem());
+        });
+
+        clearDueDate.setOnAction(event -> {
+
+            taskDueDatePicker.setValue(null);
+            saveTaskInfo(incompleteTaskListView.getSelectionModel().getSelectedItem());
+        });
+    }
 
     //if showHideCompletedTaskButton clicked, show the completeTaskListView if it is hidden and vice versa
     @FXML
