@@ -68,7 +68,29 @@ public class ToDoController {
             saveTaskInfo(incompleteTaskListView.getSelectionModel().getSelectedItem());
         });
 
+        //listener will be triggered when a new task is selected from the incompleteTaskListView and load newly selected task's data into the view
+        incompleteTaskListView.getSelectionModel().selectedItemProperty().addListener(((observable, oldValue, newValue) -> {
 
+            if (oldValue == null) {
+
+                clearTaskInfoVBoxData(dateChangeListener);
+                setTaskInfoVBoxData(newValue, dateChangeListener);
+                taskInfoVBox.disableProperty().setValue(false);
+
+            } else if (newValue == null) {
+
+                taskInfoVBox.disableProperty().setValue(true);
+                saveTaskInfo(oldValue);
+
+                clearTaskInfoVBoxData(dateChangeListener);
+
+            } else {
+
+                saveTaskInfo(oldValue);
+                clearTaskInfoVBoxData(dateChangeListener);
+                setTaskInfoVBoxData(newValue, dateChangeListener);
+            }
+        }));
 
     }
 
