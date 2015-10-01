@@ -1,3 +1,5 @@
+package NEW;
+
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -644,9 +646,16 @@ public class ToDoController {
 
     }
 
+    //deletes the selected task when the button is pressed
     @FXML
     private void deleteTask(ActionEvent e){
 
+        ToDoList selectedList = todoListView.getSelectionModel().getSelectedItem();
+        Task toDelete = incompleteTaskListView.getSelectionModel().getSelectedItem();
+
+        if(!selectedList.getIncompleteTaskList().remove(toDelete)){
+            System.err.println("Task not deleted");
+        }
     }
 
     @FXML
