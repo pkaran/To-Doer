@@ -668,6 +668,19 @@ public class ToDoController {
 
     }
 
+    //clears data for taskInfoVBox's nodes/components
+    private void clearTaskInfoVBoxData(ChangeListener<? super LocalDate> dateChangeListener){
+
+        taskNameTextField.clear();
+        taskDueDatePicker.valueProperty().removeListener(dateChangeListener);
+        taskDueDatePicker.setValue(null);
+        priority_toggle_group.selectToggle(null);
+        subTaskListView.setItems(null);
+        addSubTaskField.clear();
+        taskNoteTextArea.clear();
+
+    }
+
     //if showHideCompletedTaskButton clicked, show the completeTaskListView if it is hidden and vice versa
     @FXML
     private void showHideCompletedTask(){
