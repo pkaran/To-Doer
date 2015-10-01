@@ -1,6 +1,5 @@
-package NEW;
-
 import javafx.beans.Observable;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -63,6 +62,11 @@ public class ToDoController {
         setSubTaskComplete();
         setSelectedToDoListListener();
         updateTaskView();
+
+        //whenever date is changed for a task, the modified task is saved
+        ChangeListener<? super LocalDate> dateChangeListener = ((observable1, oldValue1, newValue1) -> {
+            saveTaskInfo(incompleteTaskListView.getSelectionModel().getSelectedItem());
+        });
 
     }
 
