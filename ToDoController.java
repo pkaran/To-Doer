@@ -68,6 +68,8 @@ public class ToDoController {
             saveTaskInfo(incompleteTaskListView.getSelectionModel().getSelectedItem());
         });
 
+
+
     }
 
     //setting user data for priority toggles
@@ -628,6 +630,42 @@ public class ToDoController {
             taskDueDatePicker.setValue(null);
             saveTaskInfo(incompleteTaskListView.getSelectionModel().getSelectedItem());
         });
+    }
+
+    //sets data for taskInfoVBox's nodes/components using task's data (passed as argument)
+    private void setTaskInfoVBoxData(Task task, ChangeListener<? super LocalDate> dateChangeListener) {
+
+        saveNewTaskNameButton.disableProperty().setValue(true);
+
+        taskNameTextField.setText(task.getTaskTitle());
+
+        if(task.getTaskDueDate() != null){
+            taskDueDatePicker.setValue(task.getTaskDueDate());
+        }
+
+        taskDueDatePicker.valueProperty().addListener(dateChangeListener);
+
+        int taskPriority = task.getPriority();
+
+        switch(taskPriority){
+            case 1:{
+                lowPriorityToggle.setSelected(true);
+                break;
+            }
+            case 2: {
+                mediumPriorityToggle.setSelected(true);
+                break;
+            }
+            case 3:{
+                highPriorityToggle.setSelected(true);
+                break;
+            }
+        }
+
+        subTaskListView.setItems(task.getSubTasks());
+
+        taskNoteTextArea.setText(task.getNote());
+
     }
 
     //if showHideCompletedTaskButton clicked, show the completeTaskListView if it is hidden and vice versa
