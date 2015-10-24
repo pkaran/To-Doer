@@ -26,7 +26,7 @@ public class ToDoer extends Application{
         FXMLLoader loader = new FXMLLoader(getClass().getResource(FXML_SCENE_HIERARCHY_PATH));
         ScrollPane scene_root = loader.load();
         ToDoController controller = loader.getController();
-        ObservableList<ToDoList> data = controller.getModel();
+        ObservableList<ToDoList> data = controller.getData();
 
         Image primaryStage_icon = new Image(ICON_PATH);
         primaryStage.getIcons().add(primaryStage_icon);
