@@ -5,14 +5,12 @@ import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+
 import model.SubTask;
 import model.Task;
 import model.ToDoList;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.time.LocalDate;
 
 /**
@@ -35,6 +33,11 @@ public class ToDoer extends Application{
         ToDoController controller = loader.getController();
         ObservableList<ToDoList> data = controller.getData();
 
+		//file pointer to file (called App-Data.txt) used for loading and saving data
+        File file = new File(DATA_FILE_PATH);
+        //loads previously saved data from file into data variable passed in as argument
+        loadData(data, file);
+		
         Image primaryStage_icon = new Image(ICON_PATH);
         primaryStage.getIcons().add(primaryStage_icon);
         primaryStage.setScene(new Scene(scene_root));
@@ -42,9 +45,7 @@ public class ToDoer extends Application{
         primaryStage.sizeToScene();
         primaryStage.show();
 
-        //file pointer to file (called App-Data.txt) used for loading and saving data
-        File file = new File(DATA_FILE_PATH);
-
+		//triggered when application is closed
         primaryStage.setOnCloseRequest(event -> {
 
             //saves note for task selected by the user in the memory
@@ -235,5 +236,143 @@ public class ToDoer extends Application{
 
         //return array of string containing task's information
         return info;
+    }
+
+    //load data from file into data variable (memory)
+    //if file pointed out by file variable doesn't exist, function loads sample data into the data variable (happens when app is used for the first time)
+    private void loadData(ObservableList<ToDoList> data, File file){
+
+        if(data == null || file == null){
+
+            return;
+        }
+		
+		//if file pointed by file pointer does not exist, load sample data into data variable
+            if(file != null && !file.exists()){
+
+                ToDoList defaultList = new ToDoList("Default List");
+                Task sampleTask = new Task("Sample Task (Double click me to mark complete)");
+
+                sampleTask.setPriority(2);
+                sampleTask.getSubTasks().add(new SubTask("Double click to delete"));
+                sampleTask.setTaskDueDate(LocalDate.of(2015, 12, 15));
+				sampleTask.setNote("Double click on a To-Do List's \nname to delete the list or to \nchange list's name");
+
+                defaultList.getIncompleteTaskList().add(sampleTask);
+                data.add(defaultList);
+            }
+
+        //used to read data from file
+        BufferedReader reader = null;
+
+        try{
+
+            reader = new BufferedReader(new FileReader(file));
+            //used to extract data from file line by line
+            String line;
+            //used to track index of ToDo List
+            int currentToDoListIndex = -1;
+            //used to store and recognize kind of information represented by a line read from file
+            String identifier;
+
+            while ((line = reader.readLine()) != null) {
+
+                String [] subStrings = line.split(";;;");
+                identifier = subStrings[0];
+
+                switch(identifier){
+
+                    //add new task list object to data
+                    case "!$$":{
+
+                        ToDoList newList = new ToDoList(subStrings[1]);     //subStrings[1] contains task list's name
+
+                        data.add(newList);
+                        currentToDoListIndex = data.indexOf(newList);
+
+                        break;
+                    }
+
+                    //add new incomplete or complete task to the list
+                    case "!--" : case "!++":{
+
+                        //following index of subStrings array represent following information :
+                        //0 = identifier, 1 = task name, 2 = task due date, 3 = task priority, 4 = task note
+                        //NOTE : any index above may or may not exist
+
+                        //variable to hold task's information loaded from file
+                        //will be eventually saved into data variable
+                        Task newTask = new Task(subStrings[1]);
+
+                        if(!subStrings[2].equals("!*---*")){
+
+                            //following index of subStrings array represent following information :
+                            //index 0 = month, index 1 = day number of month, index 2 = year
+                            String [] date = subStrings[2].split(",");
+                            newTask.setTaskDueDate(LocalDate.of(Integer.parseInt(date[2]), Integer.parseInt(date[0]), Integer.parseInt(date[1])));
+                        }
+
+                        //save task's priority
+                        newTask.setPriority(Integer.parseInt(subStrings[3]));
+
+                        if(!subStrings[4].equals("!*---*")){
+                            newTask.setNote(subStrings[4]);
+                        }
+
+                        //add sub-tasks
+                        line = reader.readLine();
+                        subStrings = line.split(";;;");
+
+                        //if string subStrings represents a list of sub task(s) contains information about at least one sub task
+                        if(subStrings[0].equals("![]") && !subStrings[1].equals("!*---*")){
+
+                            //marker to mark if the first index (index 0) of subStrings array is traversed in the for each loop below
+                            //if index 0 is traversed, mark it true
+                            boolean identifierSkipped = false;
+
+                            for(String i : subStrings){
+
+                                if(!identifierSkipped){
+                                    identifierSkipped = true;
+                                    continue;
+                                }
+
+                                newTask.getSubTasks().add(new SubTask(i));
+                            }
+                        }
+
+                        if(identifier.equals("!--")){
+
+                            //store newTask as an incomplete task
+                            data.get(currentToDoListIndex).getIncompleteTaskList().add(newTask);
+                        }else{
+
+                            //store newTask as a complete task
+                            data.get(currentToDoListIndex).getCompleteTaskList().add(newTask);
+                        }
+
+                        break;
+                    }
+
+                    default:
+                        break;
+                }
+            }
+
+            reader.close();
+
+        }catch (IOException e){
+
+            e.printStackTrace();        //for testing
+        }finally {
+
+            try{
+                if(reader != null){
+                    reader.close();
+                }
+            }catch(IOException e){
+                e.printStackTrace();    //for testing
+            }
+        }
     }
 }
