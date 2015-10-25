@@ -37,6 +37,17 @@ public class ToDoController {
         return toDoListModel;
     }
 
+    //if a task is selected, saves note for task selected by the user
+    //if task not selected by a user, function does nothing
+    public void saveCurrentSelectedTaskNote(){
+
+        Task selectedTask =  incompleteTaskListView.getSelectionModel().getSelectedItem();
+
+        if(selectedTask != null){
+            selectedTask.setNote(taskNoteTextArea.getText());
+        }
+    }
+
     public void initialize(){
 
         //disabling toDoListTasksInfoVBox and taskInfoVBox after the view loads up for the first time
