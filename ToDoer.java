@@ -33,6 +33,7 @@ public class ToDoer extends Application{
         primaryStage.setScene(new Scene(scene_root));
         primaryStage.setTitle(PROGRAM_NAME);
         primaryStage.sizeToScene();
+        primaryStage.setResizable(false);
         primaryStage.show();
 
     }
